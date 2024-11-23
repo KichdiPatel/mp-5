@@ -8,7 +8,7 @@ export default async function AliasPage({
 }: {
   params: { alias: string };
 }) {
-  const { alias } = await params;
+  const { alias } = params;
 
   const site = await getSiteByAlias(alias);
 
