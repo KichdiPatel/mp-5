@@ -11,6 +11,7 @@ import TextField from "@mui/material/TextField";
 import OutputCard from "./output-card";
 import { useState, useEffect } from "react";
 import createShortenedUrl from "@/lib/createShortenedUrl";
+import { CreateShortenedUrlResponse } from "@/types";
 
 export default function MainCard() {
   const [alias, setAlias] = useState("");
@@ -31,15 +32,22 @@ export default function MainCard() {
       return;
     }
     try {
-      const newLink = await createShortenedUrl(alias, url);
+      // const newLink = await createShortenedUrl(alias, url);
+      const newLink: CreateShortenedUrlResponse = await createShortenedUrl(
+        alias,
+        url
+      );
 
-      if (!newLink) {
-        setErrorMessage("Failed to create the shortened URL. Try again. ");
+      if (!newLink.success) {
+        // setErrorMessage("Failed to create the shortened URL. Try again. ");
+        setErrorMessage(newLink.error || "Unknown error occurred. Try again");
         return;
       }
 
-      setShortenedLink(`${currentWebsiteLink}/${newLink.alias}`);
-      setErrorMessage("");
+      if (newLink.data) {
+        setShortenedLink(`${currentWebsiteLink}/${newLink.data.alias}`);
+        setErrorMessage("");
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         setErrorMessage(error.message);
